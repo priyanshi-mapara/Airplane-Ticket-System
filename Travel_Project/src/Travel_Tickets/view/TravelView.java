@@ -2,6 +2,7 @@ package Travel_Tickets.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -192,39 +193,18 @@ public class TravelView extends JFrame {
     }
 
     private JPanel buildSummaryPanel() {
-        JPanel summaryPanel = new JPanel(new GridBagLayout());
+        JPanel summaryPanel = new JPanel(new BorderLayout());
         summaryPanel.setBackground(CARD_BACKGROUND);
         summaryPanel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(BORDER_COLOR, 1, true),
                 new EmptyBorder(CARD_PADDING, CARD_PADDING, CARD_PADDING, CARD_PADDING)));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(6, 8, 6, 8);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.weightx = 1;
 
-        JLabel header = new JLabel("Passenger Ticket");
-        header.setFont(TITLE_FONT);
-        header.setForeground(PRIMARY);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        summaryPanel.add(header, gbc);
+        JPanel headerWrapper = new JPanel(new BorderLayout());
+        headerWrapper.setBackground(CARD_BACKGROUND);
+        headerWrapper.add(buildSummaryHeader(), BorderLayout.NORTH);
+        headerWrapper.add(new JSeparator(), BorderLayout.SOUTH);
 
-        JLabel chip = new JLabel("AeroFly");
-        chip.setOpaque(true);
-        chip.setHorizontalAlignment(SwingConstants.CENTER);
-        chip.setBackground(ACCENT);
-        chip.setForeground(Color.WHITE);
-        chip.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        chip.setBorder(new EmptyBorder(6, 12, 6, 12));
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.NORTHEAST;
-        summaryPanel.add(chip, gbc);
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
-        summaryPanel.add(buildSummaryGrid(), gbc);
+        summaryPanel.add(headerWrapper, BorderLayout.NORTH);
+        summaryPanel.add(buildSummaryGrid(), BorderLayout.CENTER);
 
         return summaryPanel;
     }
@@ -398,8 +378,9 @@ public class TravelView extends JFrame {
     private JPanel buildSummaryGrid() {
         JPanel wrapper = new JPanel(new GridBagLayout());
         wrapper.setOpaque(false);
+        wrapper.setBorder(new EmptyBorder(16, 16, 16, 16));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.insets = new Insets(10, 8, 10, 8);
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0.5;
@@ -423,13 +404,28 @@ public class TravelView extends JFrame {
         gbc.gridy = row;
         gbc.gridx = 0;
         gbc.gridwidth = 4;
+        gbc.insets = new Insets(4, 0, 12, 0);
         wrapper.add(new JSeparator(), gbc);
         gbc.gridwidth = 1;
+        gbc.insets = new Insets(10, 8, 10, 8);
         row++;
 
         addSummaryRow(wrapper, gbc, "Route", summaryRoute, row, 0, 2);
 
         return wrapper;
+    }
+
+    private JPanel buildSummaryHeader() {
+        JPanel headerBar = new JPanel(new BorderLayout());
+        headerBar.setBackground(ACCENT);
+        headerBar.setBorder(new EmptyBorder(14, 18, 14, 18));
+
+        JLabel title = new JLabel("Passenger Ticket", SwingConstants.CENTER);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        title.setForeground(Color.WHITE);
+        headerBar.add(title, BorderLayout.CENTER);
+
+        return headerBar;
     }
 
     private void addFareRow(JPanel panel, GridBagConstraints gbc, String label, JTextField field) {
@@ -450,13 +446,16 @@ public class TravelView extends JFrame {
             int span) {
         JLabel jLabel = new JLabel(label);
         jLabel.setFont(LABEL_FONT);
+        jLabel.setHorizontalAlignment(SwingConstants.LEFT);
         gbc.gridx = col * 2;
         gbc.gridy = row;
         gbc.gridwidth = 1;
+        gbc.weightx = 0;
         panel.add(jLabel, gbc);
 
         gbc.gridx = col * 2 + 1;
         gbc.gridwidth = span;
+        gbc.weightx = 1;
         panel.add(target, gbc);
         gbc.gridwidth = 1;
     }
@@ -511,7 +510,7 @@ public class TravelView extends JFrame {
             field.setBackground(FIELD_BACKGROUND);
             field.setBorder(new LineBorder(BORDER_COLOR, 1, true));
             field.setFont(LABEL_FONT);
-            field.setPreferredSize(field.getPreferredSize());
+            field.setPreferredSize(new Dimension(200, 32));
         }
     }
 
