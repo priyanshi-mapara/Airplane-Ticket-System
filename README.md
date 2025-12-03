@@ -37,4 +37,3 @@ AeroFly Ticketing is a desktop Java Swing application for booking airline ticket
 
 ## Notes
 - The included SVG screenshot mirrors the layout and styling defined in `TravelView`; generate a live view by running the app locally.
-- If your environment lacks a display server, launch the app inside a virtual framebuffer (e.g., `xvfb-run`) to render the Swing UI.
