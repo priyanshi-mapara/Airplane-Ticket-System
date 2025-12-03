@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
@@ -689,8 +690,8 @@ public class TravelView extends JFrame {
         }
 
         @Override
-        public java.awt.Component getListCellRendererComponent(JComboBox list, Object value, int index, boolean isSelected,
-                boolean cellHasFocus) {
+        public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value == null && index == -1) {
                 setForeground(PLACEHOLDER_COLOR);
