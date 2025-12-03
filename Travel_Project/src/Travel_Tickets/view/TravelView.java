@@ -5,15 +5,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
@@ -23,6 +24,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import Travel_Tickets.model.Destination;
 import Travel_Tickets.model.FareBreakdown;
@@ -34,12 +36,19 @@ import Travel_Tickets.model.Ticket;
 public class TravelView extends JFrame {
     private static final long serialVersionUID = 1L;
 
-    private final Color primary = new Color(0, 82, 155);
-    private final Color accent = new Color(244, 137, 37);
-    private final Color surface = new Color(248, 252, 255);
-    private final Color outline = new Color(202, 224, 244);
-    private final Font headingFont = new Font("Segoe UI", Font.BOLD, 32);
-    private final Font labelFont = new Font("Segoe UI", Font.PLAIN, 14);
+    private static final Color WINDOW_BACKGROUND = new Color(238, 244, 249);
+    private static final Color CARD_BACKGROUND = Color.WHITE;
+    private static final Color BORDER_COLOR = new Color(210, 220, 232);
+    private static final Color PRIMARY = new Color(16, 76, 136);
+    private static final Color ACCENT = new Color(255, 152, 0);
+    private static final Color FIELD_BACKGROUND = new Color(245, 248, 252);
+    private static final Color PLACEHOLDER_COLOR = new Color(140, 150, 160);
+    private static final Color ERROR_COLOR = new Color(201, 79, 79);
+    private static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 32);
+    private static final Font SECTION_FONT = new Font("Segoe UI", Font.BOLD, 18);
+    private static final Font LABEL_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    private static final Font SMALL_FONT = new Font("Segoe UI", Font.PLAIN, 12);
+    private static final int CARD_PADDING = 20;
 
     private final JRadioButton economyClass = new JRadioButton("Economy");
     private final JRadioButton businessClass = new JRadioButton("Business");
@@ -48,8 +57,13 @@ public class TravelView extends JFrame {
     private final JRadioButton singleTicket = new JRadioButton("Single");
     private final JRadioButton returnTicket = new JRadioButton("Return");
 
+    private JPanel classChoicePanel;
+    private JPanel tripChoicePanel;
+    private JPanel passengerRowPanel;
+    private JPanel destinationRowPanel;
+
     private final JComboBox<Destination> destinationBox = new JComboBox<>(Destination.values());
-    private final JSpinner adultSpinner = new JSpinner(new SpinnerNumberModel(1, 0, 10, 1));
+    private final JSpinner adultSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
     private final JSpinner childSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 10, 1));
 
     private final JTextField taxField = new JTextField();
@@ -76,19 +90,21 @@ public class TravelView extends JFrame {
     private final ButtonGroup classGroup = new ButtonGroup();
     private final ButtonGroup ticketGroup = new ButtonGroup();
 
+    private final JLabel messageLabel = new JLabel(" ");
+
     public TravelView() {
         setTitle("AeroFly - Ticketing");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(0, 0, 1250, 700);
+        setBounds(0, 0, 1300, 740);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new Color(232, 241, 250));
+        getContentPane().setBackground(WINDOW_BACKGROUND);
         buildLayout();
         applyDefaults();
     }
 
     private void buildLayout() {
-        JPanel contentPane = new JPanel(new BorderLayout(10, 10));
-        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel contentPane = new JPanel(new BorderLayout(15, 15));
+        contentPane.setBorder(new EmptyBorder(20, 20, 20, 20));
         contentPane.setBackground(getContentPane().getBackground());
         setContentPane(contentPane);
 
@@ -97,11 +113,12 @@ public class TravelView extends JFrame {
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setBackground(contentPane.getBackground());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 0, 0, 10);
+        gbc.insets = new Insets(0, 15, 0, 0);
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.5;
         gbc.weighty = 1;
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         centerPanel.add(buildBookingPanel(), gbc);
@@ -113,10 +130,11 @@ public class TravelView extends JFrame {
 
     private JPanel buildHeader() {
         JPanel header = new JPanel();
-        header.setBackground(primary);
+        header.setBackground(PRIMARY);
+        header.setBorder(BorderFactory.createEmptyBorder(16, 24, 16, 24));
         JLabel title = new JLabel("BOOK YOUR TICKET");
         title.setForeground(Color.WHITE);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 40));
+        title.setFont(TITLE_FONT);
         header.add(title);
         JLabel subtitle = new JLabel("Seamless bookings with AeroFly");
         subtitle.setForeground(Color.WHITE);
@@ -128,210 +146,351 @@ public class TravelView extends JFrame {
 
     private JPanel buildBookingPanel() {
         JPanel bookingPanel = new JPanel(new GridBagLayout());
-        bookingPanel.setBackground(surface);
-        bookingPanel.setBorder(new LineBorder(outline, 2, true));
+        bookingPanel.setBackground(CARD_BACKGROUND);
+        bookingPanel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(BORDER_COLOR, 1, true),
+                new EmptyBorder(CARD_PADDING, CARD_PADDING, CARD_PADDING, CARD_PADDING)));
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(6, 8, 6, 8);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
 
         JLabel bookingLabel = new JLabel("Ticket Type");
-        bookingLabel.setFont(headingFont);
-        bookingLabel.setForeground(primary);
+        bookingLabel.setFont(TITLE_FONT);
+        bookingLabel.setForeground(PRIMARY);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = 2;
         bookingPanel.add(bookingLabel, gbc);
 
-        // class options
-        gbc.gridwidth = 1;
-        gbc.gridy++;
-        gbc.gridx = 0;
-        bookingPanel.add(styleRadio(firstClass), gbc);
-        gbc.gridx = 1;
-        bookingPanel.add(styleRadio(businessClass), gbc);
-        gbc.gridx = 2;
-        bookingPanel.add(styleRadio(economyClass), gbc);
-
-        // ticket type
-        gbc.gridy++;
-        gbc.gridx = 0;
-        bookingPanel.add(styleRadio(singleTicket), gbc);
-        gbc.gridx = 1;
-        bookingPanel.add(styleRadio(returnTicket), gbc);
-
-        // passengers
-        gbc.gridy++;
-        gbc.gridx = 0;
-        bookingPanel.add(new JLabel("Adults"), gbc);
-        gbc.gridx = 1;
-        bookingPanel.add(adultSpinner, gbc);
-        gbc.gridx = 2;
-        bookingPanel.add(new JLabel("Children"), gbc);
-        gbc.gridx = 3;
-        bookingPanel.add(childSpinner, gbc);
-
-        // destinations
-        gbc.gridy++;
-        gbc.gridx = 0;
-        bookingPanel.add(new JLabel("Destination"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 3;
-        destinationBox.setFont(labelFont);
-        bookingPanel.add(destinationBox, gbc);
-
-        // separator
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        bookingPanel.add(new JSeparator(), gbc);
-
-        // fare breakdown labels
         gbc.gridy++;
         gbc.gridwidth = 2;
-        JLabel fareLabel = new JLabel("Fare Breakdown");
-        fareLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        fareLabel.setForeground(primary);
-        bookingPanel.add(fareLabel, gbc);
+        gbc.insets = new Insets(2, 8, 14, 8);
+        messageLabel.setFont(SMALL_FONT);
+        messageLabel.setForeground(ERROR_COLOR);
+        bookingPanel.add(messageLabel, gbc);
+        gbc.insets = new Insets(6, 8, 6, 8);
 
-        // tax row
         gbc.gridy++;
-        gbc.gridwidth = 1;
-        addLabeledField(bookingPanel, gbc, "Tax", taxField);
+        bookingPanel.add(buildPassengerGrid(), gbc);
 
-        // subtotal row
         gbc.gridy++;
-        addLabeledField(bookingPanel, gbc, "Sub Total", subtotalField);
+        bookingPanel.add(new JSeparator(), gbc);
 
-        // total row
         gbc.gridy++;
-        addLabeledField(bookingPanel, gbc, "Total", totalField);
+        bookingPanel.add(buildFarePanel(), gbc);
 
-        // class fare
         gbc.gridy++;
-        addLabeledField(bookingPanel, gbc, "Class Fare", classFareField);
-
-        // buttons
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 1;
-        calculateButton.setBackground(primary);
-        calculateButton.setForeground(Color.WHITE);
-        calculateButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        bookingPanel.add(calculateButton, gbc);
-
-        gbc.gridx = 1;
-        resetButton.setBackground(outline);
-        resetButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        bookingPanel.add(resetButton, gbc);
-
-        gbc.gridx = 2;
-        exitButton.setBackground(new Color(230, 99, 99));
-        exitButton.setForeground(Color.WHITE);
-        exitButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        bookingPanel.add(exitButton, gbc);
+        bookingPanel.add(buildButtonRow(), gbc);
 
         makeReadOnlyFields();
         buildGroups();
+        styleInputs();
         return bookingPanel;
     }
 
     private JPanel buildSummaryPanel() {
         JPanel summaryPanel = new JPanel(new GridBagLayout());
-        summaryPanel.setBackground(Color.WHITE);
-        summaryPanel.setBorder(new LineBorder(outline, 2, true));
+        summaryPanel.setBackground(CARD_BACKGROUND);
+        summaryPanel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(BORDER_COLOR, 1, true),
+                new EmptyBorder(CARD_PADDING, CARD_PADDING, CARD_PADDING, CARD_PADDING)));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.insets = new Insets(6, 8, 6, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.weightx = 1;
 
         JLabel header = new JLabel("Passenger Ticket");
-        header.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        header.setForeground(primary);
+        header.setFont(TITLE_FONT);
+        header.setForeground(PRIMARY);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 4;
+        gbc.gridwidth = 2;
         summaryPanel.add(header, gbc);
 
         JLabel chip = new JLabel("AeroFly");
         chip.setOpaque(true);
         chip.setHorizontalAlignment(SwingConstants.CENTER);
-        chip.setBackground(accent);
+        chip.setBackground(ACCENT);
         chip.setForeground(Color.WHITE);
         chip.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        gbc.gridx = 3;
-        gbc.gridwidth = 1;
+        chip.setBorder(new EmptyBorder(6, 12, 6, 12));
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
         summaryPanel.add(chip, gbc);
 
         gbc.gridy++;
         gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        summaryPanel.add(new JSeparator(), gbc);
-
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        addSummaryRow(summaryPanel, gbc, "Class", summaryClass, 0);
-        addSummaryRow(summaryPanel, gbc, "Ticket", summaryTicket, 1);
-        addSummaryRow(summaryPanel, gbc, "Adult", summaryAdult, 2);
-        addSummaryRow(summaryPanel, gbc, "Child", summaryChild, 3);
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        summaryPanel.add(new JSeparator(), gbc);
-
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        addSummaryRow(summaryPanel, gbc, "From", summaryFrom, 0);
-        addSummaryRow(summaryPanel, gbc, "To", summaryTo, 1);
-        addSummaryRow(summaryPanel, gbc, "Date", summaryDate, 2);
-        addSummaryRow(summaryPanel, gbc, "Time", summaryTime, 3);
-
-        gbc.gridy++;
-        gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        summaryPanel.add(new JSeparator(), gbc);
-
-        gbc.gridy++;
-        gbc.gridwidth = 1;
-        addSummaryRow(summaryPanel, gbc, "Ticket No", summaryTicketNo, 0);
-        addSummaryRow(summaryPanel, gbc, "Price", summaryPrice, 1);
-        addSummaryRow(summaryPanel, gbc, "Route", summaryRoute, 2);
+        gbc.gridwidth = 2;
+        summaryPanel.add(buildSummaryGrid(), gbc);
 
         return summaryPanel;
     }
 
-    private void addLabeledField(JPanel panel, GridBagConstraints gbc, String label, JTextField field) {
-        field.setEditable(false);
-        field.setBackground(Color.WHITE);
-        JLabel jLabel = new JLabel(label + ":");
-        jLabel.setFont(labelFont);
+    private JPanel buildPassengerGrid() {
+        JPanel grid = new JPanel(new GridBagLayout());
+        grid.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        JLabel formTitle = new JLabel("Ticket Details");
+        formTitle.setFont(SECTION_FONT);
+        formTitle.setForeground(PRIMARY);
         gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        grid.add(formTitle, gbc);
         gbc.gridwidth = 1;
-        panel.add(jLabel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        classChoicePanel = buildChoicePanel("Ticket Class", firstClass, businessClass, economyClass);
+        grid.add(classChoicePanel, gbc);
         gbc.gridx = 1;
-        gbc.gridwidth = 3;
+        tripChoicePanel = buildChoicePanel("Trip Type", singleTicket, returnTicket);
+        grid.add(tripChoicePanel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        passengerRowPanel = buildPassengerRow();
+        grid.add(passengerRowPanel, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        destinationRowPanel = buildDestinationRow();
+        grid.add(destinationRowPanel, gbc);
+
+        return grid;
+    }
+
+    private JPanel buildDestinationRow() {
+        JPanel row = new JPanel(new GridBagLayout());
+        row.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        JLabel label = new JLabel("Destination");
+        label.setFont(LABEL_FONT);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        row.add(label, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        destinationBox.setFont(LABEL_FONT);
+        destinationBox.setRenderer(new PlaceholderRenderer("Select Destination…"));
+        destinationBox.setPreferredSize(destinationBox.getPreferredSize());
+        row.add(destinationBox, gbc);
+        row.setBorder(defaultChoiceBorder());
+        return row;
+    }
+
+    private JPanel buildPassengerRow() {
+        JPanel row = new JPanel(new GridBagLayout());
+        row.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel adultsLabel = new JLabel("Adults");
+        adultsLabel.setFont(LABEL_FONT);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        row.add(adultsLabel, gbc);
+
+        gbc.gridx = 1;
+        adultSpinner.setPreferredSize(adultSpinner.getPreferredSize());
+        row.add(adultSpinner, gbc);
+
+        JLabel childrenLabel = new JLabel("Children");
+        childrenLabel.setFont(LABEL_FONT);
+        gbc.gridx = 2;
+        row.add(childrenLabel, gbc);
+
+        gbc.gridx = 3;
+        row.add(childSpinner, gbc);
+        row.setBorder(defaultChoiceBorder());
+        return row;
+    }
+
+    private JPanel buildChoicePanel(String title, JRadioButton... options) {
+        JPanel panel = new JPanel(new GridLayout(0, options.length, 8, 0));
+        panel.setOpaque(false);
+        panel.setBorder(defaultChoiceBorder());
+
+        JPanel container = new JPanel(new BorderLayout(0, 8));
+        container.setOpaque(false);
+        JLabel heading = new JLabel(title);
+        heading.setFont(SECTION_FONT);
+        heading.setForeground(PRIMARY);
+        container.add(heading, BorderLayout.NORTH);
+        container.add(panel, BorderLayout.CENTER);
+
+        for (JRadioButton option : options) {
+            panel.add(styleRadio(option));
+        }
+
+        return container;
+    }
+
+    private JPanel buildFarePanel() {
+        JPanel farePanel = new JPanel(new GridBagLayout());
+        farePanel.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 4, 6, 4);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel title = new JLabel("Fare Breakdown");
+        title.setFont(SECTION_FONT);
+        title.setForeground(PRIMARY);
+        gbc.gridwidth = 2;
+        farePanel.add(title, gbc);
+        gbc.gridwidth = 1;
+
+        gbc.gridy++;
+        addFareRow(farePanel, gbc, "Tax", taxField);
+        gbc.gridy++;
+        addFareRow(farePanel, gbc, "Sub Total", subtotalField);
+        gbc.gridy++;
+        addFareRow(farePanel, gbc, "Total", totalField);
+        gbc.gridy++;
+        addFareRow(farePanel, gbc, "Class Fare", classFareField);
+
+        return farePanel;
+    }
+
+    private JPanel buildButtonRow() {
+        JPanel row = new JPanel(new GridBagLayout());
+        row.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 4, 0, 4);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+
+        styleButton(calculateButton, true, false);
+        styleButton(exitButton, true, false);
+        styleButton(resetButton, false, true);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        row.add(calculateButton, gbc);
+        gbc.gridx++;
+        row.add(resetButton, gbc);
+        gbc.gridx++;
+        row.add(exitButton, gbc);
+        return row;
+    }
+
+    private JPanel buildSummaryGrid() {
+        JPanel wrapper = new JPanel(new GridBagLayout());
+        wrapper.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.5;
+
+        int row = 0;
+        addSummaryRow(wrapper, gbc, "Class", summaryClass, row, 0);
+        addSummaryRow(wrapper, gbc, "Ticket Type", summaryTicket, row++, 1);
+
+        addSummaryRow(wrapper, gbc, "Adult", summaryAdult, row, 0);
+        addSummaryRow(wrapper, gbc, "Child", summaryChild, row++, 1);
+
+        addSummaryRow(wrapper, gbc, "From", summaryFrom, row, 0);
+        addSummaryRow(wrapper, gbc, "To", summaryTo, row++, 1);
+
+        addSummaryRow(wrapper, gbc, "Date", summaryDate, row, 0);
+        addSummaryRow(wrapper, gbc, "Time", summaryTime, row++, 1);
+
+        addSummaryRow(wrapper, gbc, "Ticket No", summaryTicketNo, row, 0);
+        addSummaryRow(wrapper, gbc, "Price", summaryPrice, row++, 1);
+
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridwidth = 4;
+        wrapper.add(new JSeparator(), gbc);
+        gbc.gridwidth = 1;
+        row++;
+
+        addSummaryRow(wrapper, gbc, "Route", summaryRoute, row, 0, 2);
+
+        return wrapper;
+    }
+
+    private void addFareRow(JPanel panel, GridBagConstraints gbc, String label, JTextField field) {
+        JLabel jLabel = new JLabel(label);
+        jLabel.setFont(LABEL_FONT);
+        gbc.gridx = 0;
+        panel.add(jLabel, gbc);
+
+        gbc.gridx = 1;
         panel.add(field, gbc);
     }
 
-    private void addSummaryRow(JPanel panel, GridBagConstraints gbc, String label, JTextField target, int column) {
-        JLabel jLabel = new JLabel(label + ":");
-        jLabel.setFont(labelFont);
-        gbc.gridx = column;
+    private void addSummaryRow(JPanel panel, GridBagConstraints gbc, String label, JTextField target, int row, int col) {
+        addSummaryRow(panel, gbc, label, target, row, col, 1);
+    }
+
+    private void addSummaryRow(JPanel panel, GridBagConstraints gbc, String label, JTextField target, int row, int col,
+            int span) {
+        JLabel jLabel = new JLabel(label);
+        jLabel.setFont(LABEL_FONT);
+        gbc.gridx = col * 2;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
         panel.add(jLabel, gbc);
-        gbc.gridy++;
-        target.setEditable(false);
-        target.setBackground(Color.WHITE);
+
+        gbc.gridx = col * 2 + 1;
+        gbc.gridwidth = span;
         panel.add(target, gbc);
-        gbc.gridy--;
+        gbc.gridwidth = 1;
     }
 
     private JRadioButton styleRadio(JRadioButton button) {
-        button.setBackground(surface);
-        button.setFont(labelFont);
+        button.setBackground(CARD_BACKGROUND);
+        button.setFont(LABEL_FONT);
         return button;
+    }
+
+    private void styleInputs() {
+        JSpinner[] spinners = { adultSpinner, childSpinner };
+        for (JSpinner spinner : spinners) {
+            spinner.setFont(LABEL_FONT);
+            spinner.setBorder(new LineBorder(BORDER_COLOR, 1, true));
+            spinner.setPreferredSize(spinner.getPreferredSize());
+        }
+        JComboBox<?>[] boxes = { destinationBox };
+        for (JComboBox<?> box : boxes) {
+            box.setBorder(new LineBorder(BORDER_COLOR, 1, true));
+        }
+    }
+
+    private void styleButton(JButton button, boolean solid, boolean muted) {
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setForeground(solid ? Color.WHITE : PRIMARY);
+        button.setBackground(solid ? Color.BLACK : CARD_BACKGROUND);
+        button.setBorder(BorderFactory.createCompoundBorder(new LineBorder(solid ? Color.BLACK : BORDER_COLOR, 1, true),
+                new EmptyBorder(8, 12, 8, 12)));
+        if (muted) {
+            button.setForeground(PRIMARY);
+        }
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.setPreferredSize(button.getPreferredSize());
     }
 
     private void buildGroups() {
@@ -348,16 +507,21 @@ public class TravelView extends JFrame {
                 summaryPrice, summaryRoute };
         for (JTextField field : fields) {
             field.setEditable(false);
-            field.setBackground(Color.WHITE);
+            field.setBackground(FIELD_BACKGROUND);
+            field.setBorder(new LineBorder(BORDER_COLOR, 1, true));
+            field.setFont(LABEL_FONT);
+            field.setPreferredSize(field.getPreferredSize());
         }
     }
 
     public void applyDefaults() {
-        economyClass.setSelected(true);
-        returnTicket.setSelected(true);
-        destinationBox.setSelectedItem(Destination.LONDON);
-        adultSpinner.setValue(1);
+        classGroup.clearSelection();
+        ticketGroup.clearSelection();
+        destinationBox.setSelectedItem(null);
+        adultSpinner.setValue(0);
         childSpinner.setValue(0);
+        clearValidation();
+        clearSummary();
     }
 
     public JRadioButton getEconomyClass() {
@@ -405,29 +569,32 @@ public class TravelView extends JFrame {
     }
 
     public void showError(String message) {
-        JOptionPane.showMessageDialog(this, message, "Input error", JOptionPane.WARNING_MESSAGE);
+        highlightValidation(message);
     }
 
     public void updateSummary(Ticket ticket, FareBreakdown breakdown) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-        summaryClass.setText(ticket.getClassType().getDisplayName());
-        summaryTicket.setText(ticket.getTicketType().getDisplayName());
-        summaryAdult.setText(String.valueOf(ticket.getAdultCount()));
-        summaryChild.setText(String.valueOf(ticket.getChildCount()));
-        summaryFrom.setText("India");
-        summaryTo.setText(ticket.getDestination().getDisplayName());
-        summaryDate.setText(dateFormatter.format(ticket.getCreatedAt()));
-        summaryTime.setText(timeFormatter.format(ticket.getCreatedAt()));
-        summaryTicketNo.setText(ticket.getTicketNumber());
-        summaryPrice.setText(formatMoney(breakdown.getTotal()));
-        summaryRoute.setText(ticket.getDestination().getRoute());
+        clearValidation();
+        setSummaryEnabled(true);
 
-        classFareField.setText(formatMoney(breakdown.getClassFare()));
-        subtotalField.setText(formatMoney(breakdown.getSubtotal()));
-        taxField.setText(formatMoney(breakdown.getTax()));
-        totalField.setText(formatMoney(breakdown.getTotal()));
+        setFieldValue(summaryClass, ticket.getClassType().getDisplayName());
+        setFieldValue(summaryTicket, ticket.getTicketType().getDisplayName());
+        setFieldValue(summaryAdult, String.valueOf(ticket.getAdultCount()));
+        setFieldValue(summaryChild, String.valueOf(ticket.getChildCount()));
+        setFieldValue(summaryFrom, "India");
+        setFieldValue(summaryTo, ticket.getDestination().getDisplayName());
+        setFieldValue(summaryDate, dateFormatter.format(ticket.getCreatedAt()));
+        setFieldValue(summaryTime, timeFormatter.format(ticket.getCreatedAt()));
+        setFieldValue(summaryTicketNo, ticket.getTicketNumber());
+        setFieldValue(summaryPrice, formatMoney(breakdown.getTotal()));
+        setFieldValue(summaryRoute, ticket.getDestination().getRoute());
+
+        setFieldValue(classFareField, formatMoney(breakdown.getClassFare()));
+        setFieldValue(subtotalField, formatMoney(breakdown.getSubtotal()));
+        setFieldValue(taxField, formatMoney(breakdown.getTax()));
+        setFieldValue(totalField, formatMoney(breakdown.getTotal()));
     }
 
     public void clearSummary() {
@@ -435,11 +602,104 @@ public class TravelView extends JFrame {
                 summaryAdult, summaryChild, summaryFrom, summaryTo, summaryDate, summaryTime, summaryTicketNo,
                 summaryPrice, summaryRoute };
         for (JTextField field : fields) {
-            field.setText("");
+            setPlaceholder(field);
         }
+        setSummaryEnabled(false);
     }
 
     private String formatMoney(double value) {
         return String.format("Rs %.2f", value);
+    }
+
+    private void setFieldValue(JTextField field, String value) {
+        field.setForeground(Color.DARK_GRAY);
+        field.setText(value);
+    }
+
+    private void setPlaceholder(JTextField field) {
+        field.setForeground(PLACEHOLDER_COLOR);
+        field.setText("—");
+    }
+
+    private void setSummaryEnabled(boolean enabled) {
+        JTextField[] fields = { summaryClass, summaryTicket, summaryAdult, summaryChild, summaryFrom, summaryTo,
+                summaryDate, summaryTime, summaryTicketNo, summaryPrice, summaryRoute };
+        for (JTextField field : fields) {
+            field.setEnabled(enabled);
+        }
+    }
+
+    private void highlightValidation(String message) {
+        clearValidation();
+        if (message == null || message.isBlank()) {
+            return;
+        }
+        messageLabel.setText(message);
+        if (message.contains("class option")) {
+            setErrorBorder(classChoicePanel);
+        }
+        if (message.contains("single or return")) {
+            setErrorBorder(tripChoicePanel);
+        }
+        if (message.contains("destination")) {
+            setErrorBorder(destinationRowPanel);
+        }
+        if (message.contains("least one passenger")) {
+            setErrorBorder(passengerRowPanel);
+        }
+    }
+
+    private void clearValidation() {
+        messageLabel.setText(" ");
+        resetBorder(classChoicePanel);
+        resetBorder(tripChoicePanel);
+        resetBorder(destinationRowPanel);
+        resetBorder(passengerRowPanel);
+    }
+
+    private void setErrorBorder(JPanel panel) {
+        if (panel != null) {
+            panel.setBorder(BorderFactory.createCompoundBorder(new LineBorder(ERROR_COLOR, 2, true),
+                    new EmptyBorder(10, 10, 10, 10)));
+        }
+    }
+
+    private void resetBorder(JPanel panel) {
+        if (panel == null) {
+            return;
+        }
+        panel.setBorder(defaultChoiceBorder());
+    }
+
+    private EmptyBorder defaultChoicePadding() {
+        return new EmptyBorder(10, 10, 10, 10);
+    }
+
+    private javax.swing.border.Border defaultChoiceBorder() {
+        return BorderFactory.createCompoundBorder(new LineBorder(BORDER_COLOR, 1, true), defaultChoicePadding());
+    }
+
+    private static class PlaceholderRenderer extends BasicComboBoxRenderer {
+        private static final long serialVersionUID = 1L;
+        private final String placeholder;
+
+        PlaceholderRenderer(String placeholder) {
+            this.placeholder = placeholder;
+            setHorizontalAlignment(SwingConstants.LEFT);
+        }
+
+        @Override
+        public java.awt.Component getListCellRendererComponent(JComboBox list, Object value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value == null && index == -1) {
+                setForeground(PLACEHOLDER_COLOR);
+                setText(placeholder);
+            } else {
+                setForeground(Color.DARK_GRAY);
+                setText(value == null ? "" : value.toString());
+            }
+            return this;
+        }
     }
 }
