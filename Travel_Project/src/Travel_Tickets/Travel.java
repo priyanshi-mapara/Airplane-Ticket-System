@@ -489,23 +489,23 @@ public class Travel {
 					txtAdult.setText("ONE");
 					txtChild.setText("NIL");
 				}
-				else if((rdbtnEconomyClass.isSelected()) &&  (rdbtnSingleTicket.isSelected()) && (rdbtnChild.isSelected()) && cmbDestinations.getSelectedItem().equals("Paris"))
-				{
-					String econ = "Rs 5000.00";
-					extra.setText(econ);
-					tc = london+(tax*london)/100;
-					String sTax = String.format("Rs %.2f",(tax*london)/100);
-					TxtTax.setText(sTax);
-					String sub = String.format("Rs %.2f", london);
-					TxtSubTotal.setText(sub);
-					String total = String.format("Rs %.2f",tc+3000);
-					TxtTotal.setText(total);
-					txtPrice.setText(total);
-					txtClass.setText("ECONOMY CLASS");
-					txtTicket.setText("ONE WAY");
-					txtAdult.setText("NIL");
-					txtChild.setText("ONE");
-				}
+                                else if((rdbtnEconomyClass.isSelected()) &&  (rdbtnSingleTicket.isSelected()) && (rdbtnChild.isSelected()) && cmbDestinations.getSelectedItem().equals("Paris"))
+                                {
+                                        String econ = "Rs 5000.00";
+                                        extra.setText(econ);
+                                        tc = paris+(tax*paris)/100;
+                                        String sTax = String.format("Rs %.2f",(tax*paris)/100);
+                                        TxtTax.setText(sTax);
+                                        String sub = String.format("Rs %.2f", paris);
+                                        TxtSubTotal.setText(sub);
+                                        String total = String.format("Rs %.2f",tc+3000);
+                                        TxtTotal.setText(total);
+                                        txtPrice.setText(total);
+                                        txtClass.setText("ECONOMY CLASS");
+                                        txtTicket.setText("ONE WAY");
+                                        txtAdult.setText("NIL");
+                                        txtChild.setText("ONE");
+                                }
 				else if ((rdbtnEconomyClass.isSelected()) &&  (rdbtnReturnTicket.isSelected()) && (rdbtnChild.isSelected()) && cmbDestinations.getSelectedItem().equals("Paris"))
 				{
 					String econ = "Rs 5000.00";
@@ -823,7 +823,7 @@ public class Travel {
 					txtAdult.setText("ONE");
 					txtChild.setText("NIL");
 				}
-				else if((rdbtnFirstClass.isSelected()) &&  (rdbtnSingleTicket.isSelected()) && (rdbtnChild.isSelected()) && cmbDestinations.getSelectedItem().equals("Sydeny"))
+                                else if((rdbtnFirstClass.isSelected()) &&  (rdbtnSingleTicket.isSelected()) && (rdbtnChild.isSelected()) && cmbDestinations.getSelectedItem().equals("Sydney"))
 				{
 					tc = syd+(tax*syd)/100;
 					String sTax = String.format("Rs %.2f",(tax*syd)/100);
