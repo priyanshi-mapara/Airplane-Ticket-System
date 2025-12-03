@@ -2,7 +2,8 @@
 
 AeroFly Ticketing is a desktop Java Swing application for booking airline tickets. It follows an MVC structure to keep the UI, business logic, and data models organized, offering passengers a streamlined way to select routes, ticket classes, and see fare breakdowns in real time.
 
-![AeroFly ticketing UI](docs/images/booking-screen.svg)
+<img width="1440" height="900" alt="Screen Shot 2025-12-02 at 9 38 04 PM" src="https://github.com/user-attachments/assets/9e4a9845-5d6c-4082-8618-59d78a53e5a6" />
+
 
 ## Features
 - **Class and ticket selection:** Choose Economy, Business, or First class and toggle between single or return tickets.
