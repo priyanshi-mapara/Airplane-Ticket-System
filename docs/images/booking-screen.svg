@@ -1,0 +1,71 @@
+<svg width="1300" height="740" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 740" fill="none">
+  <style>
+    .primary { fill: rgb(16,76,136); }
+    .accent { fill: rgb(255,152,0); }
+    .card { fill: white; stroke: rgb(210,220,232); stroke-width: 3; }
+    .section { fill: none; stroke: rgb(210,220,232); stroke-width: 2; }
+    .text { fill: rgb(40,53,71); font-family: 'Segoe UI', sans-serif; font-size: 18px; }
+    .title { font-size: 28px; font-weight: bold; }
+    .subtitle { font-size: 18px; }
+    .error { fill: rgb(201,79,79); font-size: 14px; }
+    .button-label { fill: white; font-size: 15px; font-weight: bold; font-family: 'Segoe UI', sans-serif; }
+  </style>
+  <rect width="1300" height="740" fill="rgb(238,244,249)" />
+  <rect class="primary" x="0" y="0" width="1300" height="90" />
+  <text x="24" y="42" class="title" fill="white" style="font-size:32px">BOOK YOUR TICKET</text>
+  <text x="330" y="46" class="subtitle" fill="white">Seamless bookings with AeroFly</text>
+  <g transform="translate(24 114)">
+    <rect class="card" width="626" height="602" rx="6" />
+    <text x="20" y="34" class="title" fill="rgb(16,76,136)">Ticket Type</text>
+    <text x="20" y="64" class="error">Choose ticket, class, destination and passengers.</text>
+    <g transform="translate(20 84)">
+      <rect class="section" width="586" height="130" rx="6" />
+      <text x="6" y="24" class="text">Class</text>
+      <text x="12" y="60" class="text">Economy</text>
+      <text x="12" y="92" class="text">Business</text>
+      <text x="12" y="124" class="text">First</text>
+    </g>
+    <g transform="translate(20 230)">
+      <rect class="section" width="586" height="100" rx="6" />
+      <text x="6" y="24" class="text">Ticket</text>
+      <text x="12" y="60" class="text">Single</text>
+      <text x="140" y="60" class="text">Return</text>
+    </g>
+    <g transform="translate(20 350)">
+      <rect class="section" width="586" height="120" rx="6" />
+      <text x="6" y="24" class="text">Destination &amp; Passengers</text>
+      <text x="12" y="60" class="text">Destination: Nairobi</text>
+      <text x="12" y="92" class="text">Adults: 1</text>
+      <text x="160" y="92" class="text">Children: 0</text>
+    </g>
+    <g transform="translate(20 490)">
+      <rect class="section" width="586" height="70" rx="6" />
+      <text x="6" y="24" class="text">Fare Details</text>
+      <text x="12" y="60" class="text">Total: $550</text>
+    </g>
+    <g transform="translate(20 562)">
+      <rect class="accent" width="120" height="36" rx="6" />
+      <text x="22" y="24" class="button-label">Calculate</text>
+      <rect class="primary" x="134" width="120" height="36" rx="6" />
+      <text x="176" y="24" class="button-label">Reset</text>
+      <rect fill="rgb(201,79,79)" x="268" width="120" height="36" rx="6" />
+      <text x="310" y="24" class="button-label">Exit</text>
+    </g>
+  </g>
+  <g transform="translate(674 114)">
+    <rect class="card" width="626" height="602" rx="6" />
+    <text x="20" y="34" class="title" fill="rgb(16,76,136)">Ticket Summary</text>
+    <g transform="translate(20 64)">
+      <rect class="section" width="586" height="516" rx="6" />
+      <text x="12" y="36" class="text">Class: Economy</text>
+      <text x="12" y="68" class="text">Ticket: Single</text>
+      <text x="12" y="100" class="text">Adults: 1  Children: 0</text>
+      <text x="12" y="132" class="text">From: Lagos</text>
+      <text x="12" y="164" class="text">To: Nairobi</text>
+      <text x="12" y="196" class="text">Date: 2024-12-01  Time: 14:30</text>
+      <text x="12" y="228" class="text">Ticket No: AF837291</text>
+      <text x="12" y="260" class="text">Price: $550</text>
+      <text x="12" y="292" class="text">Route: LG-LHR-NBO</text>
+    </g>
+  </g>
+</svg>
